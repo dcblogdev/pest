@@ -7,6 +7,7 @@ namespace Pest\Mixins;
 use BadMethodCallException;
 use Closure;
 use Countable;
+use DateTime;
 use DateTimeInterface;
 use Error;
 use InvalidArgumentException;
@@ -517,6 +518,24 @@ final class Expectation
     public function toBeNumeric(string $message = ''): self
     {
         Assert::assertIsNumeric($this->value, $message);
+
+        return $this;
+    }
+
+    /**
+     * Asserts that the value contains only digits.
+     *
+     * @return self<TValue>
+     */
+    public function toBeDate(): self
+    {
+        $isDate = $this->value instanceof DateTime
+        || (is_string($this->value) && strtotime($this->value) !== false);
+
+        Assert::assertTrue(
+            $isDate,
+            sprintf('Expected value to be a valid date, but got: %s', var_export($this->value, true))
+        );
 
         return $this;
     }
